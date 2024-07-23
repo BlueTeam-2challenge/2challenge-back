@@ -11,4 +11,8 @@ router
   .route('/animals/:id')
   .delete((req, res) => animalController.delete(req, res))
 
+router
+  .route('/animals/:id')
+  .put((req, res) => animalController.update(req, res))
+
 module.exports = router
