@@ -18,5 +18,5 @@ app.use(express.urlencoded({ extended: false }))
 app.use('/', require('./routes/index'))
 
 app.listen(process.env.PORT, () => {
-  console.log(`Server is running on http://localhost:${process.env.PORT}`)
+  console.log(`🚀 Server is running on http://localhost:${process.env.PORT}`)
 })
