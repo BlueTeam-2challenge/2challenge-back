@@ -21,6 +21,14 @@ const userController = {
       res.status(400).send(error)
     }
   },
+  async getAll(req, res) {
+    try {
+      const response = await UserModel.find()
+      res.status(200).send(response)
+    } catch (error) {
+      res.status(400).send(error)
+    }
+  },
 }
 
 module.exports = userController
