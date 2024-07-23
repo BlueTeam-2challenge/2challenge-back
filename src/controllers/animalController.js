@@ -26,6 +26,14 @@ const animalController = {
       res.status(400).send(error)
     }
   },
+  async getById(req, res) {
+    try {
+      const response = await AnimalModel.findById(req.params.id)
+      res.status(200).send(response)
+    } catch (error) {
+      res.status(400).send(error)
+    }
+  },
 }
 
 module.exports = animalController
