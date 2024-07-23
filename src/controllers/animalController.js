@@ -29,6 +29,10 @@ const animalController = {
   async getById(req, res) {
     try {
       const response = await AnimalModel.findById(req.params.id)
+      if (!response) {
+        res.status(404).send({ message: 'Animal not found' })
+        return
+      }
       res.status(200).send(response)
     } catch (error) {
       res.status(400).send(error)
