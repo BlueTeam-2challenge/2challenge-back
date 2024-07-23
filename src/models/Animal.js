@@ -6,7 +6,7 @@ const animalSchema = new Schema(
   {
     petName: {
       type: String,
-      required: true,
+      required: [true, 'Pet name is required'],
     },
     petSpecie: {
       type: String,
@@ -23,10 +23,12 @@ const animalSchema = new Schema(
     petAge: {
       type: Number,
       required: true,
+      min: [0, 'Age must be greater than 0'],
+      max: 100,
     },
     ownerName: {
       type: String,
-      required: true,
+      required: [true, 'Owner name is required'],
     },
   },
   { timestamps: true }
