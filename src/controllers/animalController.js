@@ -38,6 +38,18 @@ const animalController = {
       res.status(400).send(error)
     }
   },
+  async delete(req, res) {
+    try {
+      const response = await AnimalModel.findByIdAndDelete(req.params.id)
+      if (!response) {
+        res.status(404).send({ message: 'Animal not found' })
+        return
+      }
+      res.status(200).send({ message: 'Animal deleted' })
+    } catch (error) {
+      res.status(400).send(error)
+    }
+  },
 }
 
 module.exports = animalController

@@ -7,4 +7,8 @@ router
   .route('/animals/:id')
   .get((req, res) => animalController.getById(req, res))
 
+router
+  .route('/animals/:id')
+  .delete((req, res) => animalController.delete(req, res))
+
 module.exports = router
