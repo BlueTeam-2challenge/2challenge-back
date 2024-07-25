@@ -1,79 +1,84 @@
-const { Animal: AnimalModel } = require('../models/Animal')
+const { PrismaClient } = require('@prisma/client')
+
+const animalClient = new PrismaClient().animal
 
 const animalController = {
   async create(req, res) {
     try {
-      const animal = {
-        petName: req.body.petName,
-        petSpecie: req.body.petSpecie,
-        petBreed: req.body.petBreed,
-        petGender: req.body.petGender,
-        petAge: req.body.petAge,
-        ownerName: req.body.ownerName,
-      }
-      const response = await AnimalModel.create(animal)
-      await response.save()
-      res.status(201).send(response)
+      const { name, description, adress, category, createdBy } = req.body
+      const response = await animalClient.create({
+        data: {
+          name,
+          description,
+          adress,
+          category,
+          creatorId: createdBy,
+        },
+      })
+      res.status(201).json(response)
     } catch (error) {
-      res.status(400).send(error)
+      res.status(400).json(error)
+      console.log(error)
     }
   },
   async getAll(req, res) {
     try {
-      const response = await AnimalModel.find()
-      res.status(200).send(response)
+      const response = await animalClient.findMany({})
+      res.status(200).json(response)
     } catch (error) {
-      res.status(400).send(error)
+      res.status(400).json(error)
+      console.log(error)
     }
   },
   async getById(req, res) {
     try {
-      const response = await AnimalModel.findById(req.params.id)
+      const response = await animalClient.findUnique({
+        where: { id: req.params.id },
+      })
       if (!response) {
-        res.status(404).send({ message: 'Animal not found' })
+        res.status(404).json({ message: 'Animal not found' })
         return
       }
-      res.status(200).send(response)
+      res.status(200).json(response)
     } catch (error) {
-      res.status(400).send(error)
+      res.status(400).json(error)
     }
   },
   async delete(req, res) {
     try {
-      const response = await AnimalModel.findByIdAndDelete(req.params.id)
+      const response = await animalClient().delete({
+        where: { id: req.params.id },
+      })
       if (!response) {
-        res.status(404).send({ message: 'Animal not found' })
+        res.status(404).json({ message: 'Animal not found' })
         return
       }
-      res.status(200).send({ message: 'Animal deleted' })
+      res.status(200).json({ message: 'Animal deleted' })
     } catch (error) {
-      res.status(400).send(error)
+      res.status(400).json(error)
     }
   },
   async update(req, res) {
     try {
-      const animal = {
-        petName: req.body.petName,
-        petSpecie: req.body.petSpecie,
-        petBreed: req.body.petBreed,
-        petGender: req.body.petGender,
-        petAge: req.body.petAge,
-        ownerName: req.body.ownerName,
-      }
-      const response = await AnimalModel.findByIdAndUpdate(
-        req.params.id,
-        animal,
-        {
-          new: true,
-        }
-      )
+      const { id } = req.params
+      const { name, description, adress, category, createdBy } = req.body
+      const response = await animalClient.update({
+        where: { id },
+        data: {
+          name,
+          description,
+          adress,
+          category,
+          creatorId: createdBy,
+        },
+      })
       if (!response) {
-        res.status(404).send({ message: 'Animal not found' })
+        res.status(404).json({ message: 'Animal not found' })
         return
       }
-      res.status(200).send(response)
+      res.status(200).json(response)
     } catch (error) {
-      res.status(400).send(error)
+      res.status(400).json(error)
     }
   },
 }
