@@ -8,17 +8,12 @@ datasource db {
 }
 
 model User {
-  id    String  @id @default(auto()) @map("_id") @db.ObjectId
+  uid    String  @id @map("_id") @db.ObjectId
   email String  @unique
   name  String?
-  password String
-  role  Role    @default(USER)
   animals Animal[]
 }
-enum Role {
-  USER
-  ADMIN
-}
+
 
 model Animal {
   id    String  @id @default(auto()) @map("_id") @db.ObjectId
@@ -28,6 +23,6 @@ model Animal {
   category String
   createdAt DateTime @default(now()) @map("createdAt")
   updatedAt DateTime @updatedAt @map("updatedAt")
-  createdBy User @relation(fields: [creatorId], references: [id])
-  creatorId String @db.ObjectId
+  createdBy User @relation(fields: [creatorId], references: [uid])
+  creatorId String
 }

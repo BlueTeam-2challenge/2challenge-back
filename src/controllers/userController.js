@@ -5,7 +5,8 @@ const userClient = new PrismaClient().user
 const userController = {
   async create(req, res) {
     try {
-      const { name, email, password, role } = req.body
+      console.log('Request body: ' + req.body)
+      const { uid, name, email } = req.body
       const userFound = await userClient.findUnique({ where: { email } })
       if (userFound) {
         res.status(400).json({ message: 'Email already registered' })
@@ -14,10 +15,9 @@ const userController = {
 
       const user = await userClient.create({
         data: {
+          uid,
           name,
           email,
-          password,
-          role,
         },
       })
 
@@ -38,9 +38,9 @@ const userController = {
 
   async getUser(req, res) {
     try {
-      const { id } = req.params
+      const { uid } = req.params
       const user = await userClient.findUnique({
-        where: { id },
+        where: { uid },
       })
       if (!user) {
         res.status(404).json({ message: 'User not found' })
@@ -54,9 +54,9 @@ const userController = {
 
   async delete(req, res) {
     try {
-      const { id } = req.params
+      const { uid } = req.params
       const user = await userClient.delete({
-        where: { id },
+        where: { uid },
       })
       if (!user) {
         res.status(404).json({ message: 'User not found' })
@@ -70,16 +70,14 @@ const userController = {
 
   async update(req, res) {
     try {
-      const { id } = req.params
-      const { name, email, password, role } = req.body
+      const { uid } = req.params
+      const { name, email } = req.body
 
       const user = await userClient.update({
-        where: { id },
+        where: { uid },
         data: {
           name,
           email,
-          password,
-          role,
         },
       })
 
