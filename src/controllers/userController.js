@@ -1,12 +1,12 @@
 const { PrismaClient } = require('@prisma/client')
-
+const { ObjectId } = require('mongodb')
 const userClient = new PrismaClient().user
 
 const userController = {
   async create(req, res) {
     try {
-      console.log('Request body: ' + req.body)
-      const { uid, name, email } = req.body
+      const { name, email } = req.body
+      const uid = new ObjectId().toString()
       const userFound = await userClient.findUnique({ where: { email } })
       if (userFound) {
         res.status(400).json({ message: 'Email already registered' })
@@ -55,16 +55,22 @@ const userController = {
   async delete(req, res) {
     try {
       const { uid } = req.params
+      if (!uid) {
+        res.status(400).json({ message: 'User ID is required' })
+        return
+      }
+
       const user = await userClient.delete({
         where: { uid },
       })
-      if (!user) {
-        res.status(404).json({ message: 'User not found' })
-        return
-      }
+
       res.status(200).json({ message: 'User deleted', user })
     } catch (error) {
-      res.status(400).json({ error: error.message })
+      if (error.code === 'P2025') {
+        res.status(404).json({ message: 'User not found' })
+      } else {
+        res.status(400).json({ error: error.message })
+      }
     }
   },
 
