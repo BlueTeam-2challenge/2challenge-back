@@ -5,12 +5,12 @@ const animalClient = new PrismaClient().animal
 const animalController = {
   async create(req, res) {
     try {
-      const { name, description, adress, category, createdBy } = req.body
+      const { name, description, address, category, createdBy } = req.body
       const response = await animalClient.create({
         data: {
           name,
           description,
-          adress,
+          address,
           category,
           creatorId: createdBy,
         },
@@ -44,9 +44,19 @@ const animalController = {
       res.status(400).json(error)
     }
   },
+  async getAllByUserId(req, res) {
+    try {
+      const response = await animalClient.findMany({
+        where: { creatorId: req.params.id },
+      })
+      res.status(200).json(response)
+    } catch (error) {
+      res.status(400).json(error)
+    }
+  },
   async delete(req, res) {
     try {
-      const response = await animalClient().delete({
+      const response = await animalClient.delete({
         where: { id: req.params.id },
       })
       if (!response) {
@@ -61,13 +71,13 @@ const animalController = {
   async update(req, res) {
     try {
       const { id } = req.params
-      const { name, description, adress, category, createdBy } = req.body
+      const { name, description, address, category, createdBy } = req.body
       const response = await animalClient.update({
         where: { id },
         data: {
           name,
           description,
-          adress,
+          address,
           category,
           creatorId: createdBy,
         },

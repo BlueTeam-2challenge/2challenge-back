@@ -15,4 +15,7 @@ router
   .route('/animals/:id')
   .put((req, res) => animalController.update(req, res))
 
+router
+  .route('/animals/user/:id')
+  .get((req, res) => animalController.getAllByUserId(req, res))
 module.exports = router
