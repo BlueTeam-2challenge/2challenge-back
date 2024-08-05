@@ -1,12 +1,16 @@
-const router = require('express').Router()
-const animalController = require('../controllers/animalController')
+import { Router } from 'express'
+import animalController from '../controllers/animalController'
+
+const router = Router()
 
 router.route('/animals').post((req, res) => animalController.create(req, res))
 router.route('/animals').get((req, res) => animalController.getAll(req, res))
 router
   .route('/animals/:id')
   .get((req, res) => animalController.getById(req, res))
-
+router
+  .route('/animals/category/:category')
+  .get((req, res) => animalController.getByCategory(req, res))
 router
   .route('/animals/:id')
   .delete((req, res) => animalController.delete(req, res))
@@ -18,4 +22,4 @@ router
 router
   .route('/animals/user/:id')
   .get((req, res) => animalController.getAllByUserId(req, res))
-module.exports = router
+export default router

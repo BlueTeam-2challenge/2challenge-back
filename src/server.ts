@@ -1,8 +1,10 @@
-require('dotenv').config()
-const express = require('express')
+import express from 'express'
+import cors from 'cors'
+import bodyParser from 'body-parser'
+import { config } from 'dotenv'
+import routes from './routes/index'
+
 const app = express()
-const cors = require('cors')
-const bodyParser = require('body-parser')
 
 app.use(
   cors({
@@ -10,10 +12,9 @@ app.use(
     optionsSuccessStatus: 200,
   })
 )
-app.use(express.json())
 app.use(bodyParser.json())
 app.use(express.urlencoded({ extended: false }))
-app.use('/api', require('./routes/index'))
+app.use('/api', routes)
 
 app.listen(process.env.PORT, () => {
   console.log(`🚀 Server is running on http://localhost:${process.env.PORT}`)

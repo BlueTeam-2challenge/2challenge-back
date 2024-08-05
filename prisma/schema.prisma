@@ -14,15 +14,22 @@ model User {
   animals Animal[]
 }
 
-
 model Animal {
   id    String  @id @default(auto()) @map("_id") @db.ObjectId
-  name  String
+  petName  String
+  category String
   description String
   address String
-  category String
+  locationId  String 
+  location  Location @relation(fields: [locationId], references: [id])
   createdAt DateTime @default(now()) @map("createdAt")
   updatedAt DateTime @updatedAt @map("updatedAt")
   createdBy User @relation(fields: [creatorId], references: [uid])
-  creatorId String
+  creatorId String  
+}
+model Location {
+  id     String   @id @default(cuid()) @map("_id")
+  lat    Float
+  lng    Float
+  animals Animal[]
 }
