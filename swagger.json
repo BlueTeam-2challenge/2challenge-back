@@ -1,0 +1,259 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Animal and User Management API",
+    "description": "API for managing animals and users."
+  },
+  "basePath": "/api",
+  "paths": {
+    "/animals": {
+      "post": {
+        "summary": "Create an Animal",
+        "description": "Create a new animal entry.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Animal object that needs to be added to the store",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Animal"
+            }
+          }
+        ],
+        "responses": {
+          "201": { "description": "Animal created successfully." },
+          "400": { "description": "Invalid request data." }
+        }
+      },
+      "get": {
+        "summary": "Get All Animals",
+        "description": "Retrieve a list of all animals.",
+        "responses": {
+          "200": { "description": "A list of animals." },
+          "500": { "description": "An error occurred." }
+        }
+      }
+    },
+    "/animals/{id}": {
+      "get": {
+        "summary": "Get Animal by ID",
+        "description": "Retrieve a specific animal by its ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": { "description": "Animal data." },
+          "404": { "description": "Animal not found." }
+        }
+      },
+      "put": {
+        "summary": "Update an Animal",
+        "description": "Update an existing animal entry.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Animal object that needs to be updated",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Animal"
+            }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Animal updated successfully." },
+          "400": { "description": "Invalid request data." },
+          "404": { "description": "Animal not found." }
+        }
+      },
+      "delete": {
+        "summary": "Delete an Animal",
+        "description": "Delete an animal entry by its ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": { "description": "Animal deleted successfully." },
+          "404": { "description": "Animal not found." }
+        }
+      }
+    },
+    "/animals/category/{category}": {
+      "get": {
+        "summary": "Get Animals by Category",
+        "description": "Retrieve animals by their category.",
+        "parameters": [
+          {
+            "name": "category",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": { "description": "A list of animals in the specified category." },
+          "404": { "description": "No animals found in the specified category." }
+        }
+      }
+    },
+    "/animals/user/{id}": {
+      "get": {
+        "summary": "Get Animals by User ID",
+        "description": "Retrieve all animals associated with a specific user.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": { "description": "A list of animals associated with the user." },
+          "404": { "description": "No animals found for the specified user." }
+        }
+      }
+    },
+    "/register": {
+      "post": {
+        "summary": "Register a User",
+        "description": "Register a new user.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User object that needs to be added to the store",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "201": { "description": "User registered successfully." },
+          "400": { "description": "Invalid request data." }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "summary": "Get All Users",
+        "description": "Retrieve a list of all users.",
+        "responses": {
+          "200": { "description": "A list of users." },
+          "500": { "description": "An error occurred." }
+        }
+      }
+    },
+    "/users/{uid}": {
+      "get": {
+        "summary": "Get User by ID",
+        "description": "Retrieve a specific user by their ID.",
+        "parameters": [
+          {
+            "name": "uid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": { "description": "User data." },
+          "404": { "description": "User not found." }
+        }
+      },
+      "put": {
+        "summary": "Update a User",
+        "description": "Update an existing user entry.",
+        "parameters": [
+          {
+            "name": "uid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User object that needs to be updated",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": { "description": "User updated successfully." },
+          "400": { "description": "Invalid request data." },
+          "404": { "description": "User not found." }
+        }
+      },
+      "delete": {
+        "summary": "Delete a User",
+        "description": "Delete a user entry by their ID.",
+        "parameters": [
+          {
+            "name": "uid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": { "description": "User deleted successfully." },
+          "404": { "description": "User not found." }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Animal": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "category": { "type": "string" },
+        "createdBy": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "location": {
+          "type": "object",
+          "properties": {
+            "lat": { "type": "number" },
+            "lng": { "type": "number" }
+          }
+        }
+      }
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "username": { "type": "string" },
+        "email": { "type": "string" }
+      }
+    }
+  },
+  "responses": {},
+  "parameters": {},
+  "securityDefinitions": {},
+  "tags": []
+}

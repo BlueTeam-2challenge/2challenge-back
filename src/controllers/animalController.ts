@@ -1,152 +1,86 @@
 import { PrismaClient } from '@prisma/client'
+import { Request, Response } from 'express'
+import {
+  CreateAnimalService,
+  CreateAnimalProps,
+} from '../services/Animals/CreateAnimalService'
+import { ListAnimalsService } from '../services/Animals/ListAnimalService'
+import { DeleteAnimalService } from '../services/Animals/DeleteAnimalService'
+import { UpdateAnimalService } from '../services/Animals/UpdateAnimalService'
+export const animalClient = new PrismaClient()
 
-const prisma = new PrismaClient()
+class AnimalController {
+  async create(req: Request, res: Response) {
+    const { petName, description, address, category, createdBy, location } =
+      req.body as CreateAnimalProps
 
-const animalController = {
-  async create(req, res) {
+    const animalService = new CreateAnimalService()
+    const animal = await animalService.execute({
+      petName,
+      description,
+      address,
+      category,
+      createdBy,
+      location,
+    })
+
+    res.status(201).json(animal)
+  }
+
+  async getAll(req: Request, res: Response) {
     try {
-      const { petName, description, address, category, createdBy, location } =
-        req.body
-
-      const locationResponse = await prisma.location.create({
-        data: {
-          lat: location.lat,
-          lng: location.lng,
-        },
-      })
-      const response = await prisma.animal.create({
-        data: {
-          petName,
-          description,
-          address,
-          category,
-          locationId: locationResponse.id,
-          creatorId: createdBy,
-        },
-      })
-
-      res.status(201).json(response)
-    } catch (error) {
-      res.status(400).json({ error: error.message })
-      console.log(error)
-    }
-  },
-
-  async getAll(req, res) {
-    try {
-      const animals = await prisma.animal.findMany({
-        include: {
-          location: true,
-        },
-      })
+      const animalsService = new ListAnimalsService()
+      const animals = await animalsService.getAll()
       res.status(200).json(animals)
     } catch (error) {
       res.status(400).json({ error: error.message })
       console.log(error)
     }
-  },
+  }
+  async getById(req: Request, res: Response) {
+    const { id } = req.params as { id: string }
+    const animalsService = new ListAnimalsService()
+    const animal = await animalsService.getById(id)
+    res.status(200).json(animal)
+  }
 
-  async getById(req, res) {
-    try {
-      const response = await prisma.animal.findUnique({
-        where: { id: req.params.id },
-        include: {
-          location: true,
-        },
-      })
-      if (!response) {
-        res.status(404).json({ message: 'Animal not found' })
-        return
-      }
-      res.status(200).json(response)
-    } catch (error) {
-      res.status(400).json({ error: error.message })
-    }
-  },
+  async getByCategory(req: Request, res: Response) {
+    const { category } = req.params as { category: string }
+    const animalsService = new ListAnimalsService()
+    const animals = await animalsService.getByCategory(category)
+    res.status(200).json(animals)
+  }
 
-  async getByCategory(req, res) {
-    try {
-      const response = await prisma.animal.findMany({
-        where: { category: req.params.category },
-        include: {
-          location: true,
-        },
-      })
-      res.status(200).json(response)
-    } catch (error) {
-      res.status(400).json({ error: error.message })
-    }
-  },
+  async getAllByUserId(req: Request, res: Response) {
+    const { id } = req.params as { id: string }
+    const animalsService = new ListAnimalsService()
+    const animals = await animalsService.getAllByUserId(id)
+    res.status(200).json(animals)
+  }
 
-  async getAllByUserId(req, res) {
-    try {
-      const response = await prisma.animal.findMany({
-        where: { creatorId: req.params.id },
-        include: {
-          location: true,
-        },
-      })
-      res.status(200).json(response)
-    } catch (error) {
-      res.status(400).json({ error: error.message })
-    }
-  },
+  async delete(req: Request, res: Response) {
+    const { id } = req.params as { id: string }
+    const deleteService = new DeleteAnimalService()
+    await deleteService.execute(id)
+    res.status(200).json({ message: 'Animal deleted' })
+  }
 
-  async delete(req, res) {
-    try {
-      const response = await prisma.animal.delete({
-        where: { id: req.params.id },
-      })
-      if (!response) {
-        res.status(404).json({ message: 'Animal not found' })
-        return
-      }
-      res.status(200).json({ message: 'Animal deleted' })
-    } catch (error) {
-      res.status(400).json({ error: error.message })
-    }
-  },
-
-  async update(req, res) {
-    try {
-      const { id } = req.params
-      const { petName, description, address, category, createdBy, location } =
-        req.body
-
-      const animal = await prisma.animal.findUnique({
-        where: { id },
-      })
-
-      if (!animal) {
-        res.status(404).json({ message: 'Animal not found' })
-        return
-      }
-
-      const locationResponse = await prisma.location.update({
-        where: { id: animal.locationId },
-        data: {
-          lat: location.lat,
-          lng: location.lng,
-        },
-      })
-
-      const response = await prisma.animal.update({
-        where: { id },
-        data: {
-          petName,
-          description,
-          address,
-          category,
-          creatorId: createdBy,
-          locationId: locationResponse.id,
-        },
-      })
-
-      res.status(200).json(response)
-    } catch (error) {
-      res.status(400).json({ error: error.message })
-    }
-  },
+  async update(req: Request, res: Response) {
+    const { id } = req.params as { id: string }
+    const { petName, description, address, category, createdBy, location } =
+      req.body as CreateAnimalProps
+    const updateService = new UpdateAnimalService()
+    const animal = await updateService.execute({
+      id,
+      petName,
+      description,
+      address,
+      category,
+      createdBy,
+      location,
+    })
+    res.status(200).json(animal)
+  }
 }
 
-export default animalController
+export default AnimalController

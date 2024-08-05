@@ -1,9 +1,10 @@
 import express from 'express'
 import cors from 'cors'
-import bodyParser from 'body-parser'
-import { config } from 'dotenv'
+import dotenv from 'dotenv'
 import routes from './routes/index'
-
+import swaggerUI from 'swagger-ui-express'
+import swaggerDocument from '../swagger.json'
+dotenv.config()
 const app = express()
 
 app.use(
@@ -12,7 +13,8 @@ app.use(
     optionsSuccessStatus: 200,
   })
 )
-app.use(bodyParser.json())
+app.use('/api/docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument))
+app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use('/api', routes)
 
